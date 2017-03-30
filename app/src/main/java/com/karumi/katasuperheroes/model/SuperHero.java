@@ -18,31 +18,47 @@ package com.karumi.katasuperheroes.model;
 
 public class SuperHero {
 
-  private final String name;
-  private final String photo;
-  private final boolean isAvenger;
-  private final String description;
+    private final String id;
+    private final String name;
+    private final String photo;
+    private final boolean isAvenger;
+    private final String description;
 
-  public SuperHero(String name, String photo, boolean isAvenger, String description) {
-    this.name = name;
-    this.photo = photo;
-    this.isAvenger = isAvenger;
-    this.description = description;
-  }
+    public SuperHero(String id, String name, String photo, boolean isAvenger, String description) {
+        this.id = id;
+        this.name = name;
+        this.photo = photo;
+        this.isAvenger = isAvenger;
+        this.description = description;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getPhoto() {
-    return photo;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public boolean isAvenger() {
-    return isAvenger;
-  }
+    public String getPhoto() {
+        return photo;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public boolean isAvenger() {
+        return isAvenger;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public String toString() {
+        return "SuperHero{" +
+                "name='" + name + '\'' +
+                ", photo='" + photo + '\'' +
+                ", isAvenger=" + isAvenger +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

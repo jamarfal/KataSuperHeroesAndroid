@@ -18,6 +18,7 @@ package com.karumi.katasuperheroes;
 
 import android.app.Application;
 import android.support.annotation.VisibleForTesting;
+
 import com.karumi.katasuperheroes.di.DaggerMainComponent;
 import com.karumi.katasuperheroes.di.MainComponent;
 

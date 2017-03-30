@@ -22,56 +22,82 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import butterknife.Bind;
+
 import com.karumi.katasuperheroes.R;
 import com.karumi.katasuperheroes.SuperHeroesApplication;
 import com.karumi.katasuperheroes.model.SuperHero;
+import com.karumi.katasuperheroes.ui.presenter.SuperHeroDetailPresenter;
 import com.squareup.picasso.Picasso;
 
-public class SuperHeroDetailActivity extends BaseActivity {
+import javax.inject.Inject;
 
-  private static final String SUPER_HERO_NAME_KEY = "super_hero_name_key";
+public class SuperHeroDetailActivity extends BaseActivity implements SuperHeroDetailPresenter.SuperHeroDetailView {
 
-  @Bind(R.id.iv_super_hero_photo) ImageView superHeroPhotoImageView;
-  @Bind(R.id.tv_super_hero_name) TextView superHeroNameTextView;
-  @Bind(R.id.tv_super_hero_description) TextView superHeroDescriptionTextView;
-  @Bind(R.id.iv_avengers_badge) View avengersBadgeView;
+    private static final String SUPER_HERO_NAME_KEY = "super_hero_name_key";
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    initializeDagger();
-  }
+    @Inject
+    SuperHeroDetailPresenter presenter;
 
-  @Override public int getLayoutId() {
-    return R.layout.super_hero_detail_activity;
-  }
+    private String superHeroId;
 
-  public void showSuperHero(SuperHero superHero) {
-    Picasso.with(this).load(superHero.getPhoto()).fit().centerCrop().into(superHeroPhotoImageView);
-    superHeroNameTextView.setText(superHero.getName());
-    superHeroDescriptionTextView.setText(superHero.getDescription());
-    int avengersBadgeVisibility = superHero.isAvenger() ? View.VISIBLE : View.GONE;
-    avengersBadgeView.setVisibility(avengersBadgeVisibility);
-  }
+    @Bind(R.id.iv_super_hero_photo)
+    ImageView superHeroPhotoImageView;
+    @Bind(R.id.tv_super_hero_name)
+    TextView superHeroNameTextView;
+    @Bind(R.id.tv_super_hero_description)
+    TextView superHeroDescriptionTextView;
+    @Bind(R.id.iv_avengers_badge)
+    View avengersBadgeView;
 
-  public static void open(Context context, String superHeroName) {
-    Intent intent = new Intent(context, SuperHeroDetailActivity.class);
-    intent.putExtra(SUPER_HERO_NAME_KEY, superHeroName);
-    context.startActivity(intent);
-  }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-  @Override protected void initializeToolbar() {
-    super.initializeToolbar();
-    String superHeroName = getSuperHeroName();
-    setTitle(superHeroName);
-  }
+        initializeDagger();
 
-  private void initializeDagger() {
-    SuperHeroesApplication app = (SuperHeroesApplication) getApplication();
-    app.getMainComponent().inject(this);
-  }
+        superHeroId = getIntent().getStringExtra("superhero_id");
 
-  private String getSuperHeroName() {
-    return getIntent().getExtras().getString(SUPER_HERO_NAME_KEY);
-  }
+        presenter.setView(this);
+        presenter.setSuperHeroId(superHeroId);
+        presenter.initialize();
+
+
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.super_hero_detail_activity;
+    }
+
+    public void showSuperHero(SuperHero superHero) {
+        Picasso.with(this).load(superHero.getPhoto()).fit().centerCrop().into(superHeroPhotoImageView);
+        superHeroNameTextView.setText(superHero.getName());
+        superHeroDescriptionTextView.setText(superHero.getDescription());
+        int avengersBadgeVisibility = superHero.isAvenger() ? View.VISIBLE : View.GONE;
+        avengersBadgeView.setVisibility(avengersBadgeVisibility);
+    }
+
+    public static void open(Context context, String superHeroName) {
+        Intent intent = new Intent(context, SuperHeroDetailActivity.class);
+        intent.putExtra(SUPER_HERO_NAME_KEY, superHeroName);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected void initializeToolbar() {
+        super.initializeToolbar();
+        String superHeroName = getSuperHeroName();
+        setTitle(superHeroName);
+    }
+
+    private void initializeDagger() {
+        SuperHeroesApplication app = (SuperHeroesApplication) getApplication();
+        app.getMainComponent().inject(this);
+    }
+
+    private String getSuperHeroName() {
+        return getIntent().getExtras().getString(SUPER_HERO_NAME_KEY);
+    }
 }

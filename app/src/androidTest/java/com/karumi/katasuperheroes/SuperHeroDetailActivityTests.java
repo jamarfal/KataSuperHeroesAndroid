@@ -32,7 +32,6 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import static android.support.test.espresso.Espresso.getIdlingResources;
 import static android.support.test.espresso.Espresso.onView;
@@ -45,7 +44,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.karumi.katasuperheroes.matchers.ToolbarMatcher.onToolbarWithTitle;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.AllOf.allOf;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class) @LargeTest public class SuperHeroDetailActivityTests {
 
@@ -135,7 +133,7 @@ import static org.mockito.Mockito.when;
     String superHeroPhoto = "https://i.annihil.us/u/prod/marvel/i/mg/c/60/55b6a28ef24fa.jpg";
     String superHeroDescription = "Super Hero Description";
     SuperHero superHero =
-        new SuperHero(superHeroName, superHeroPhoto, isAvenger, superHeroDescription);
+        new SuperHero(id, superHeroName, superHeroPhoto, isAvenger, superHeroDescription);
     return superHero;
   }
 

@@ -31,13 +31,12 @@ import com.karumi.katasuperheroes.recyclerview.RecyclerViewInteraction;
 import com.karumi.katasuperheroes.ui.view.MainActivity;
 import com.karumi.katasuperheroes.ui.view.SuperHeroDetailActivity;
 import it.cosenonjaviste.daggermock.DaggerMockRule;
-import java.util.Collections;
+
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -53,7 +52,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.karumi.katasuperheroes.matchers.RecyclerViewItemsCountMatcher.recyclerViewHasItemCount;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class) @LargeTest public class MainActivityTest {
 
@@ -183,7 +181,7 @@ import static org.mockito.Mockito.when;
       String superHeroPhoto = "https://i.annihil.us/u/prod/marvel/i/mg/c/60/55b6a28ef24fa.jpg";
       String superHeroDescription = "Description Super Hero - " + i;
       SuperHero superHero =
-          new SuperHero(superHeroName, superHeroPhoto, avengers, superHeroDescription);
+          new SuperHero(id, superHeroName, superHeroPhoto, avengers, superHeroDescription);
       superHeroes.add(superHero);
     }
     return superHeroes;

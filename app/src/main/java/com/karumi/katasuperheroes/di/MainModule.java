@@ -16,10 +16,20 @@
 
 package com.karumi.katasuperheroes.di;
 
+import com.karumi.katasuperheroes.model.repository.SuperHeroRepository;
+
 import dagger.Module;
 import dagger.Provides;
+
 import javax.inject.Singleton;
 
-@Module public class MainModule {
+@Module
+public class MainModule {
+
+    @Provides
+    @Singleton
+    public SuperHeroRepository provideSuperHeroesRepository() {
+        return new SuperHeroRepository();
+    }
 
 }

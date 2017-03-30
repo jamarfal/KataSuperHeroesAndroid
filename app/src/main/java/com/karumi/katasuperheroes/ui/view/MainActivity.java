@@ -16,90 +16,116 @@
 
 package com.karumi.katasuperheroes.ui.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
 import butterknife.Bind;
+
 import com.karumi.katasuperheroes.R;
 import com.karumi.katasuperheroes.SuperHeroesApplication;
 import com.karumi.katasuperheroes.model.SuperHero;
+import com.karumi.katasuperheroes.model.UseCase;
+import com.karumi.katasuperheroes.model.repository.SuperHeroRepository;
+import com.karumi.katasuperheroes.model.usecase.GetSuperHeros;
+import com.karumi.katasuperheroes.ui.presenter.MainPresenter;
 import com.karumi.marvelapiclient.CharacterApiClient;
 import com.karumi.marvelapiclient.MarvelApiConfig;
 import com.karumi.marvelapiclient.MarvelApiException;
 import com.karumi.marvelapiclient.model.CharactersDto;
 import com.karumi.marvelapiclient.model.CharactersQuery;
 import com.karumi.marvelapiclient.model.MarvelResponse;
+
 import java.util.List;
 
-public class MainActivity extends BaseActivity {
+import javax.inject.Inject;
 
-  public static final String LOGTAG = "MainActivity";
-  private SuperHeroesAdapter adapter;
+public class MainActivity extends BaseActivity implements MainPresenter.MainView {
 
-  @Bind(R.id.tv_empty_case) View emptyCaseView;
-  @Bind(R.id.recycler_view) RecyclerView recyclerView;
+    public static final String LOGTAG = "MainActivity";
+    private SuperHeroesAdapter adapter;
+    @Inject
+    MainPresenter mainPresenter;
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    initializeDagger();
-    initializeAdapter();
-    initializeRecyclerView();
-  }
+    @Bind(R.id.tv_empty_case)
+    View emptyCaseView;
+    @Bind(R.id.recycler_view)
+    RecyclerView recyclerView;
 
-  @Override protected void onResume() {
-    super.onResume();
-    new Thread(new Runnable() {
-      @Override public void run() {
-        MarvelApiConfig marvelApiConfig =
-            new MarvelApiConfig.Builder("bf1f5d5f088f59478a3f68324fd1face",
-                "d3fa0b1bad53d48b8bac7b9d4a02a860d24caca0").debug().build();
-        CharacterApiClient characterApiClient = new CharacterApiClient(marvelApiConfig);
-        CharactersQuery spider = CharactersQuery.Builder.create().withOffset(0).withLimit(10).build();
-        try {
-          MarvelResponse<CharactersDto> all = characterApiClient.getAll(spider);
-          Log.d(LOGTAG, "Characters downloaded = " + all.getResponse().getCharacters().size());
-        } catch (MarvelApiException e) {
-          Log.e(LOGTAG, "Exception catch trying to download some characters from the Marvel API", e);
-        }
-      }
-    }).start();
-  }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initializeDagger();
+        initializeAdapter();
+        initializeRecyclerView();
+        mainPresenter.setView(this);
+        mainPresenter.initialize();
 
-  @Override public int getLayoutId() {
-    return R.layout.main_activity;
-  }
+    }
 
-  public void showSuperHeroes(List<SuperHero> superHeroes) {
-    adapter.addAll(superHeroes);
-    adapter.notifyDataSetChanged();
-  }
+  /*  private void initializePresenter() {
+        SuperHeroRepository superHeroRepository = new SuperHeroRepository();
+        GetSuperHeros getSuperHeros = new GetSuperHeros(superHeroRepository);
+        mainPresenter = new MainPresenter(getSuperHeros);
+        mainPresenter.setView(this);
+        mainPresenter.initialize();
+    }*/
 
-  public void openSuperHeroScreen(SuperHero superHero) {
-    SuperHeroDetailActivity.open(this, superHero.getName());
-  }
 
-  public void showEmptyCase() {
-    emptyCaseView.setVisibility(View.VISIBLE);
-  }
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-  public void hideEmptyCase() {
-    emptyCaseView.setVisibility(View.GONE);
-  }
+    @Override
+    public int getLayoutId() {
+        return R.layout.main_activity;
+    }
 
-  private void initializeDagger() {
-    SuperHeroesApplication app = (SuperHeroesApplication) getApplication();
-    app.getMainComponent().inject(this);
-  }
+    @Override
+    public void showSuperHeroes(List<SuperHero> superHeroes) {
+        adapter.addAll(superHeroes);
+        adapter.notifyDataSetChanged();
+    }
 
-  private void initializeAdapter() {
-    adapter = new SuperHeroesAdapter();
-  }
+    @Override
+    public void openSuperHeroScreen(SuperHero superHero) {
+        SuperHeroDetailActivity.open(this, superHero.getName());
+    }
 
-  private void initializeRecyclerView() {
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    recyclerView.setHasFixedSize(true);
-    recyclerView.setAdapter(adapter);
-  }
+    @Override
+    public void showEmptyCase() {
+        emptyCaseView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEmptyCase() {
+        emptyCaseView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initializeDagger() {
+        SuperHeroesApplication app = (SuperHeroesApplication) getApplication();
+        app.getMainComponent().inject(this);
+    }
+
+    private void initializeAdapter() {
+        adapter = new SuperHeroesAdapter();
+    }
+
+    private void initializeRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        ;
+    }
+
 }
